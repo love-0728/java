@@ -1,0 +1,588 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Hello Kitty · 注册</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  :root {
+    --pink-50:  #fff5f8;
+    --pink-100: #ffe3ee;
+    --pink-200: #ffc9de;
+    --pink-300: #ffa8c9;
+    --pink-400: #ff8ab8;
+    --pink-500: #f76fa5;
+    --pink-600: #e75a92;
+    --red:      #e8404f;
+    --ink:      #5c4a52;
+    --ink-soft: #a08793;
+    --bg:       linear-gradient(135deg, #ffe9f2 0%, #ffd6e7 45%, #ffc4dd 100%);
+    --heart-color: var(--pink-300);
+  }
+
+  body {
+    min-height: 100vh;
+    font-family: "PingFang SC", "Microsoft YaHei", "Segoe UI", sans-serif;
+    background: var(--bg);
+    transition: background .6s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+    overflow-x: hidden;
+    position: relative;
+  }
+
+  /* ---------- 背景漂浮装饰 ---------- */
+  .deco {
+    position: fixed;
+    pointer-events: none;
+    opacity: .55;
+    animation: floaty 6s ease-in-out infinite;
+    z-index: 0;
+  }
+  .heart {
+    width: 26px; height: 26px;
+    background: var(--heart-color);
+    transform: rotate(45deg);
+    border-radius: 4px 4px 0 0;
+    position: relative;
+    transition: background .6s ease;
+  }
+  .heart::before, .heart::after {
+    content: ""; position: absolute; width: 26px; height: 26px;
+    background: var(--heart-color); border-radius: 50%;
+  }
+  .heart::before { left: -13px; }
+  .heart::after  { top: -13px; }
+
+  .d1 { top: 12%; left: 10%; animation-delay: 0s; }
+  .d2 { top: 68%; left: 6%;  animation-delay: 1.2s; transform: rotate(45deg) scale(.7); }
+  .d3 { top: 18%; right: 9%; animation-delay: .6s; }
+  .d4 { top: 74%; right: 12%; animation-delay: 1.8s; transform: rotate(45deg) scale(.85); }
+  .d5 { top: 44%; left: 18%; animation-delay: 2.4s; transform: rotate(45deg) scale(.55); }
+  .d6 { top: 40%; right: 20%; animation-delay: 3s; transform: rotate(45deg) scale(.6); }
+
+  @keyframes floaty {
+    0%, 100% { translate: 0 0; }
+    50% { translate: 0 -16px; }
+  }
+
+  /* ---------- 卡片 ---------- */
+  .card {
+    position: relative;
+    z-index: 1;
+    width: 400px;
+    max-width: 100%;
+    background: rgba(255, 255, 255, .92);
+    backdrop-filter: blur(8px);
+    border-radius: 28px;
+    padding: 40px 36px 30px;
+    box-shadow:
+      0 20px 60px rgba(231, 90, 146, .25),
+      0 4px 16px rgba(231, 90, 146, .12);
+    text-align: center;
+  }
+
+  /* 顶部蝴蝶结丝带 */
+  .ribbon {
+    position: absolute;
+    top: 0; left: 50%;
+    transform: translateX(-50%);
+    width: 120px; height: 26px;
+    background: linear-gradient(90deg, var(--red), #ff6b6b);
+    clip-path: polygon(0 0, 100% 0, 92% 100%, 8% 100%);
+    border-radius: 0 0 8px 8px;
+  }
+
+  /* ---------- Kitty 全身展示 ---------- */
+  .avatar-wrap {
+    width: 100%;
+    height: 280px;
+    margin: 8px 0 14px;
+    border-radius: 22px;
+    background: linear-gradient(135deg, #fff3f8, #ffe6f0);
+    border: none;
+    overflow: hidden;
+    box-shadow: none;
+    animation: bounce 3.2s ease-in-out infinite;
+  }
+  .avatar-wrap img {
+    width: 100%; height: 100%;
+    object-fit: contain;
+  }
+  @keyframes bounce {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-8px); }
+  }
+
+  h1 {
+    font-size: 28px;
+    color: var(--pink-600);
+    letter-spacing: 1px;
+    font-weight: 800;
+  }
+  h1 span { color: var(--red); }
+  .subtitle {
+    color: var(--ink-soft);
+    font-size: 13.5px;
+    margin: 8px 0 22px;
+  }
+
+  /* ---------- 表单 ---------- */
+  .field {
+    position: relative;
+    margin-bottom: 14px;
+  }
+  .field .icon {
+    position: absolute;
+    left: 14px; top: 50%;
+    transform: translateY(-50%);
+    font-size: 16px;
+    opacity: .75;
+  }
+  .field input {
+    width: 100%;
+    padding: 13px 44px 13px 42px;
+    border: 2px solid var(--pink-100);
+    border-radius: 999px;
+    background: var(--pink-50);
+    font-size: 14px;
+    color: var(--ink);
+    outline: none;
+    transition: all .25s;
+  }
+  .field input::placeholder { color: #c9a9b6; }
+  .field input:focus {
+    border-color: var(--pink-400);
+    background: #fff;
+    box-shadow: 0 0 0 4px rgba(255, 138, 184, .18);
+  }
+  .field.error input {
+    border-color: var(--red);
+    background: #fff5f6;
+    box-shadow: 0 0 0 4px rgba(232, 64, 79, .12);
+  }
+  .field .msg {
+    display: block;
+    text-align: left;
+    font-size: 11.5px;
+    color: var(--red);
+    margin: 5px 0 0 42px;
+    height: 0;
+    opacity: 0;
+    transition: all .2s;
+  }
+  .field.error .msg { height: auto; opacity: 1; }
+  .toggle-eye {
+    position: absolute;
+    right: 14px; top: 50%;
+    transform: translateY(-50%);
+    border: none; background: none;
+    cursor: pointer; font-size: 15px;
+    opacity: .6;
+  }
+  .toggle-eye:hover { opacity: 1; }
+
+  /* 图形验证码 */
+  .field.captcha-field input { padding-right: 110px; }
+  .captcha-img {
+    position: absolute;
+    right: 6px; top: 50%;
+    transform: translateY(-50%);
+    height: 38px;
+    width: 100px;
+    border-radius: 10px;
+    border: 2px solid var(--pink-100);
+    cursor: pointer;
+    background: #fff;
+    transition: transform .15s;
+    user-select: none;
+  }
+  .captcha-img:hover { transform: translateY(-50%) scale(1.04); }
+  .captcha-img:active { transform: translateY(-50%) scale(.96); }
+
+  .row {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    font-size: 12.5px;
+    color: var(--ink-soft);
+    margin: 2px 4px 18px;
+  }
+  .row label { display: flex; align-items: center; gap: 6px; cursor: pointer; }
+  .row input[type="checkbox"] {
+    accent-color: var(--pink-500);
+    width: 15px; height: 15px;
+  }
+  .row a { color: var(--pink-500); text-decoration: none; }
+  .row a:hover { text-decoration: underline; }
+
+  .btn {
+    width: 100%;
+    padding: 14px;
+    border: none;
+    border-radius: 999px;
+    background: linear-gradient(135deg, var(--pink-400), var(--pink-600));
+    color: #fff;
+    font-size: 16px;
+    font-weight: 700;
+    letter-spacing: 6px;
+    cursor: pointer;
+    box-shadow: 0 8px 20px rgba(231, 90, 146, .35);
+    transition: transform .2s, box-shadow .2s;
+  }
+  .btn:hover { transform: translateY(-2px); box-shadow: 0 12px 26px rgba(231, 90, 146, .45); }
+  .btn:active { transform: translateY(0); }
+  .btn:disabled { opacity: .65; cursor: not-allowed; transform: none; }
+
+  .divider {
+    display: flex; align-items: center;
+    gap: 12px;
+    color: #d3b6c2;
+    font-size: 12px;
+    margin: 22px 0 16px;
+  }
+  .divider::before, .divider::after {
+    content: ""; flex: 1; height: 1px;
+    background: linear-gradient(90deg, transparent, var(--pink-200), transparent);
+  }
+
+  .socials {
+    display: flex; justify-content: center; gap: 14px;
+    margin-bottom: 22px;
+  }
+  .socials button {
+    width: 42px; height: 42px;
+    border-radius: 50%;
+    border: 2px solid var(--pink-100);
+    background: var(--pink-50);
+    font-size: 18px;
+    cursor: pointer;
+    transition: all .2s;
+  }
+  .socials button:hover {
+    background: var(--pink-200);
+    transform: translateY(-3px) scale(1.06);
+  }
+
+  .footer { font-size: 13px; color: var(--ink-soft); }
+  .footer a { color: var(--pink-500); font-weight: 600; text-decoration: none; }
+  .footer a:hover { text-decoration: underline; }
+
+  /* ---------- 右下角背景切换 ---------- */
+  .bg-switch {
+    position: fixed;
+    right: 20px; bottom: 20px;
+    z-index: 10;
+    display: flex; align-items: center; gap: 8px;
+    padding: 10px 16px;
+    border: 2px solid rgba(255,255,255,.7);
+    border-radius: 999px;
+    background: rgba(255,255,255,.6);
+    backdrop-filter: blur(6px);
+    color: var(--pink-600);
+    font-size: 13px; font-weight: 700;
+    cursor: pointer;
+    box-shadow: 0 6px 18px rgba(231, 90, 146, .25);
+    transition: transform .2s, box-shadow .2s;
+    user-select: none;
+  }
+  .bg-switch:hover { transform: translateY(-2px) scale(1.04); box-shadow: 0 10px 24px rgba(231, 90, 146, .35); }
+  .bg-switch:active { transform: scale(.96); }
+  .bg-switch .dot {
+    width: 16px; height: 16px; border-radius: 50%;
+    border: 2px solid #fff;
+    background: linear-gradient(135deg, #ff8ab8, #f76fa5);
+    box-shadow: 0 0 0 1px rgba(231,90,146,.3);
+  }
+
+  /* ---------- 提示气泡 ---------- */
+  .toast {
+    position: fixed;
+    left: 50%; bottom: 36px;
+    transform: translateX(-50%) translateY(20px);
+    background: #fff;
+    color: var(--pink-600);
+    border: 2px solid var(--pink-200);
+    border-radius: 999px;
+    padding: 10px 22px;
+    font-size: 14px;
+    font-weight: 600;
+    box-shadow: 0 10px 30px rgba(231, 90, 146, .25);
+    opacity: 0;
+    pointer-events: none;
+    transition: all .35s;
+    z-index: 9;
+  }
+  .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+  @keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(-6px); }
+    75% { transform: translateX(6px); }
+  }
+  .field.shake { animation: shake .3s; }
+
+  @media (max-width: 440px) {
+    .card { padding: 34px 24px 26px; }
+  }
+</style>
+</head>
+<body>
+
+  <div class="deco d1"><div class="heart"></div></div>
+  <div class="deco d2"><div class="heart"></div></div>
+  <div class="deco d3"><div class="heart"></div></div>
+  <div class="deco d4"><div class="heart"></div></div>
+  <div class="deco d5"><div class="heart"></div></div>
+  <div class="deco d6"><div class="heart"></div></div>
+
+  <div class="card">
+    <div class="ribbon"></div>
+
+    <div class="avatar-wrap">
+      <img src="kitty-cutout.png" alt="Hello Kitty 全身照（已抠图）">
+    </div>
+
+    <h1>加入 <span>Kitty</span> 家族 ♡</h1>
+    <p class="subtitle">填好下面的小卡片，一起住进甜甜的城堡吧！</p>
+
+    <form id="registerForm" novalidate>
+      <div class="field" id="f-username">
+        <span class="icon">🎀</span>
+        <input type="text" id="username" placeholder="用户名（3-20 位字母/数字）" autocomplete="username">
+        <span class="msg" id="m-username"></span>
+      </div>
+
+      <div class="field" id="f-password">
+        <span class="icon">🔒</span>
+        <input type="password" id="password" placeholder="密码（至少 6 位）" autocomplete="new-password">
+        <button type="button" class="toggle-eye" data-target="password" aria-label="显示密码">👁️</button>
+        <span class="msg" id="m-password"></span>
+      </div>
+
+      <div class="field" id="f-confirm">
+        <span class="icon">🔒</span>
+        <input type="password" id="confirm" placeholder="再次输入密码" autocomplete="new-password">
+        <button type="button" class="toggle-eye" data-target="confirm" aria-label="显示密码">👁️</button>
+        <span class="msg" id="m-confirm"></span>
+      </div>
+
+      <div class="field captcha-field" id="f-captcha">
+        <span class="icon">🧩</span>
+        <input type="text" id="captchaCode" placeholder="图形验证码（4 位）" maxlength="4" autocomplete="off">
+        <img id="captchaImg" class="captcha-img" title="看不清？点击换一张" alt="验证码">
+        <span class="msg" id="m-captcha"></span>
+      </div>
+
+      <div class="row">
+        <label><input type="checkbox" id="agree"> 我已阅读并同意 <a href="#" onclick="return false;">《家族公约》</a></label>
+      </div>
+
+      <button type="submit" class="btn">注 册</button>
+    </form>
+
+    <div class="divider">其他方式加入</div>
+    <div class="socials">
+      <button title="微信">💬</button>
+      <button title="QQ">🐧</button>
+      <button title="手机号">📱</button>
+    </div>
+
+    <p class="footer">已经有账号啦？<a href="hello-kitty-login.html">去登录 →</a></p>
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+  <div class="bg-switch" id="bgSwitch" title="点击切换背景">
+    <span class="dot" id="bgDot"></span>
+    换背景 🎀
+  </div>
+
+<script>
+  // ---------- Toast ----------
+  const toast = document.getElementById('toast');
+  function showToast(msg) {
+    toast.textContent = msg;
+    toast.classList.add('show');
+    clearTimeout(showToast._t);
+    showToast._t = setTimeout(() => toast.classList.remove('show'), 2200);
+  }
+
+  // ---------- 密码显示/隐藏 ----------
+  document.querySelectorAll('.toggle-eye').forEach(eye => {
+    eye.addEventListener('click', () => {
+      const input = document.getElementById(eye.dataset.target);
+      const show = input.type === 'password';
+      input.type = show ? 'text' : 'password';
+      eye.textContent = show ? '🙈' : '👁️';
+    });
+  });
+
+  // ---------- 校验工具 ----------
+  const fields = {
+    username: document.getElementById('username'),
+    password: document.getElementById('password'),
+    confirm: document.getElementById('confirm'),
+    captcha: document.getElementById('captchaCode')
+  };
+
+  function setError(key, message) {
+    const wrap = document.getElementById('f-' + key);
+    wrap.classList.add('error');
+    document.getElementById('m-' + key).textContent = message;
+    wrap.classList.remove('shake');
+    void wrap.offsetWidth;
+    wrap.classList.add('shake');
+  }
+  function clearError(key) {
+    const wrap = document.getElementById('f-' + key);
+    wrap.classList.remove('error');
+    document.getElementById('m-' + key).textContent = '';
+  }
+
+  function validate() {
+    let ok = true;
+
+    const uname = fields.username.value.trim();
+    if (!uname) { setError('username', '🎀 用户名不能为空哦～'); ok = false; }
+    else if (!/^[A-Za-z0-9_]+$/.test(uname)) { setError('username', '只能包含字母、数字和下划线'); ok = false; }
+    else if (uname.length < 3 || uname.length > 20) { setError('username', '长度需在 3-20 位之间'); ok = false; }
+    else clearError('username');
+
+    const pwd = fields.password.value;
+    if (!pwd) { setError('password', '🔒 密码还没填写呢～'); ok = false; }
+    else if (pwd.length < 6) { setError('password', '密码至少要有 6 位哦'); ok = false; }
+    else clearError('password');
+
+    const cfm = fields.confirm.value;
+    if (!cfm) { setError('confirm', '🔒 请再输一次密码确认'); ok = false; }
+    else if (cfm !== pwd) { setError('confirm', '两次输入的密码不一致'); ok = false; }
+    else clearError('confirm');
+
+    const cap = fields.captcha.value.trim();
+    if (!cap) { setError('captcha', '🧩 请填写图形验证码'); ok = false; }
+    else if (!/^[A-Za-z0-9]{4}$/.test(cap)) { setError('captcha', '验证码是 4 位字符哦'); ok = false; }
+    else clearError('captcha');
+
+    return ok;
+  }
+
+  // 实时清除错误
+  Object.keys(fields).forEach(key => {
+    fields[key].addEventListener('input', () => {
+      if (document.getElementById('f-' + key).classList.contains('error')) clearError(key);
+    });
+  });
+
+  // ---------- 图形验证码 ----------
+  const captchaImg = document.getElementById('captchaImg');
+  let captchaId = '';
+
+  async function refreshCaptcha() {
+    try {
+      const res = await fetch('/api/captcha');
+      const data = await res.json();
+      if (data.ok) {
+        captchaId = data.captchaId;
+        captchaImg.src = data.image;
+        fields.captcha.value = '';
+      } else {
+        showToast('😿 验证码加载失败，稍后再试');
+      }
+    } catch (err) {
+      showToast('⚠️ 无法连接服务器，请先运行后端 server.js');
+    }
+  }
+  captchaImg.addEventListener('click', refreshCaptcha);
+  refreshCaptcha();
+
+  // ---------- 提交 ----------
+  const form = document.getElementById('registerForm');
+  const btn = form.querySelector('.btn');
+
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+
+    if (!validate()) {
+      showToast('🙈 还有小地方没填好～');
+      return;
+    }
+    if (!document.getElementById('agree').checked) {
+      showToast('📜 请先勾选《家族公约》哦～');
+      return;
+    }
+
+    const uname = fields.username.value.trim();
+    const pwd = fields.password.value;
+
+    btn.disabled = true;
+    btn.textContent = '注册中…';
+
+    try {
+      const res = await fetch('/api/register', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          username: uname,
+          password: pwd,
+          captchaId: captchaId,
+          captchaCode: fields.captcha.value.trim()
+        })
+      });
+      const data = await res.json();
+      if (data.ok) {
+        localStorage.setItem('hk_user', uname); // 记下登录态
+        showToast('♡ 注册成功，正在穿越时空…');
+        setTimeout(() => {
+          window.location.href = 'transition.html?user=' + encodeURIComponent(uname);
+        }, 1200);
+      } else {
+        btn.disabled = false;
+        btn.textContent = '注 册';
+        // 把服务端报错映射到对应字段
+        const msg = data.msg || '注册失败，请重试';
+        if (msg.includes('用户名')) setError('username', msg);
+        else if (msg.includes('密码')) setError('password', msg);
+        else if (msg.includes('验证码')) setError('captcha', msg);
+        else showToast('🙈 ' + msg);
+        if (msg.includes('验证码')) refreshCaptcha(); // 验证码是一次性的，失败后换新的
+      }
+    } catch (err) {
+      btn.disabled = false;
+      btn.textContent = '注 册';
+      showToast('⚠️ 无法连接服务器，请先运行后端 server.js');
+    }
+  });
+
+  // ---------- 右下角切换背景 ----------
+  const themes = [
+    { name: '草莓粉', bg: 'linear-gradient(135deg, #ffe9f2 0%, #ffd6e7 45%, #ffc4dd 100%)', heart: '#ffa8c9' },
+    { name: '天空蓝', bg: 'linear-gradient(135deg, #e3f2ff 0%, #cfe6ff 45%, #bcdcff 100%)', heart: '#9ec5ff' },
+    { name: '梦幻紫', bg: 'linear-gradient(135deg, #f3e6ff 0%, #e6d2ff 45%, #d9bdff 100%)', heart: '#c9a3ff' },
+    { name: '薄荷绿', bg: 'linear-gradient(135deg, #e6fff4 0%, #d2ffe9 45%, #bdf7da 100%)', heart: '#7fe3b8' },
+    { name: '蜜桃橙', bg: 'linear-gradient(135deg, #fff0e6 0%, #ffdcc7 45%, #ffc9b0 100%)', heart: '#ffb38f' },
+    { name: '晚霞紫粉', bg: 'linear-gradient(135deg, #ffe8e0 0%, #ffd1e8 50%, #e8d1ff 100%)', heart: '#f3a7d6' }
+  ];
+  let themeIdx = 0;
+  const bgSwitch = document.getElementById('bgSwitch');
+  const bgDot = document.getElementById('bgDot');
+  function applyTheme() {
+    const t = themes[themeIdx];
+    const root = document.documentElement;
+    root.style.setProperty('--bg', t.bg);
+    root.style.setProperty('--heart-color', t.heart);
+    bgDot.style.background = t.bg;
+    bgSwitch.lastChild.textContent = ' 换背景（' + t.name + '）';
+  }
+  bgSwitch.addEventListener('click', () => {
+    themeIdx = (themeIdx + 1) % themes.length;
+    applyTheme();
+    showToast('🎨 已切换到「' + themes[themeIdx].name + '」背景');
+  });
+</script>
+</body>
+</html>

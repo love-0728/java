@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Hello Kitty · 欢迎</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  :root {
+    --pink-50:  #fff5f8;
+    --pink-100: #ffe3ee;
+    --pink-200: #ffc9de;
+    --pink-300: #ffa8c9;
+    --pink-400: #ff8ab8;
+    --pink-500: #f76fa5;
+    --pink-600: #e75a92;
+    --red:      #e8404f;
+    --ink:      #5c4a52;
+    --ink-soft: #a08793;
+    --bg:       linear-gradient(135deg, #ffe9f2 0%, #ffd6e7 45%, #ffc4dd 100%);
+    --heart-color: var(--pink-300);
+  }
+
+  body {
+    min-height: 100vh;
+    font-family: "PingFang SC", "Microsoft YaHei", "Segoe UI", sans-serif;
+    background: var(--bg);
+    transition: background .6s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+    overflow-x: hidden;
+    position: relative;
+  }
+
+  .deco { position: fixed; pointer-events: none; opacity: .55; animation: floaty 6s ease-in-out infinite; z-index: 0; }
+  .heart { width: 26px; height: 26px; background: var(--heart-color); transform: rotate(45deg); border-radius: 4px 4px 0 0; position: relative; transition: background .6s ease; }
+  .heart::before, .heart::after { content: ""; position: absolute; width: 26px; height: 26px; background: var(--heart-color); border-radius: 50%; }
+  .heart::before { left: -13px; }
+  .heart::after  { top: -13px; }
+  .d1 { top: 12%; left: 10%; }
+  .d2 { top: 68%; left: 6%; animation-delay: 1.2s; transform: rotate(45deg) scale(.7); }
+  .d3 { top: 18%; right: 9%; animation-delay: .6s; }
+  .d4 { top: 74%; right: 12%; animation-delay: 1.8s; transform: rotate(45deg) scale(.85); }
+  @keyframes floaty { 0%,100% { translate: 0 0; } 50% { translate: 0 -16px; } }
+
+  .card {
+    position: relative; z-index: 1;
+    width: 420px; max-width: 100%;
+    background: rgba(255,255,255,.92);
+    backdrop-filter: blur(8px);
+    border-radius: 28px;
+    padding: 38px 36px 32px;
+    text-align: center;
+    box-shadow: 0 20px 60px rgba(231,90,146,.25), 0 4px 16px rgba(231,90,146,.12);
+  }
+
+  .kitty {
+    width: 200px; height: 260px;
+    margin: 4px auto 18px;
+    animation: bounce 3.2s ease-in-out infinite;
+  }
+  .kitty img { width: 100%; height: 100%; object-fit: contain; }
+  @keyframes bounce { 0%,100% { transform: translateY(0);} 50% { transform: translateY(-8px);} }
+
+  .badge {
+    display: inline-block;
+    background: linear-gradient(135deg, var(--pink-400), var(--pink-600));
+    color: #fff; font-size: 13px; font-weight: 700;
+    padding: 5px 16px; border-radius: 999px;
+    letter-spacing: 1px; margin-bottom: 14px;
+    box-shadow: 0 6px 16px rgba(231,90,146,.35);
+  }
+  h1 { font-size: 26px; color: var(--pink-600); letter-spacing: 1px; }
+  h1 span { color: var(--red); }
+  .welcome-user { color: var(--ink); font-size: 16px; font-weight: 700; margin: 10px 0 6px; }
+  .subtitle { color: var(--ink-soft); font-size: 14px; line-height: 1.7; margin-bottom: 26px; }
+
+  .btn {
+    width: 100%; padding: 14px; border: none; border-radius: 999px;
+    background: linear-gradient(135deg, var(--pink-400), var(--pink-600));
+    color: #fff; font-size: 16px; font-weight: 700; letter-spacing: 4px;
+    cursor: pointer; box-shadow: 0 8px 20px rgba(231,90,146,.35);
+    transition: transform .2s, box-shadow .2s;
+  }
+  .btn:hover { transform: translateY(-2px); box-shadow: 0 12px 26px rgba(231,90,146,.45); }
+  .btn:active { transform: translateY(0); }
+
+  .back { display: block; margin-top: 16px; font-size: 13px; color: var(--ink-soft); text-decoration: none; }
+  .back:hover { color: var(--pink-500); }
+
+  /* 右下角背景切换 */
+  .bg-switch {
+    position: fixed; right: 20px; bottom: 20px; z-index: 10;
+    display: flex; align-items: center; gap: 8px;
+    padding: 10px 16px; border: 2px solid rgba(255,255,255,.7); border-radius: 999px;
+    background: rgba(255,255,255,.6); backdrop-filter: blur(6px);
+    color: var(--pink-600); font-size: 13px; font-weight: 700; cursor: pointer;
+    box-shadow: 0 6px 18px rgba(231,90,146,.25); transition: transform .2s, box-shadow .2s; user-select: none;
+  }
+  .bg-switch:hover { transform: translateY(-2px) scale(1.04); box-shadow: 0 10px 24px rgba(231,90,146,.35); }
+  .bg-switch:active { transform: scale(.96); }
+  .bg-switch .dot { width: 16px; height: 16px; border-radius: 50%; border: 2px solid #fff; background: linear-gradient(135deg,#ff8ab8,#f76fa5); }
+</style>
+</head>
+<body>
+
+  <div class="deco d1"><div class="heart"></div></div>
+  <div class="deco d2"><div class="heart"></div></div>
+  <div class="deco d3"><div class="heart"></div></div>
+  <div class="deco d4"><div class="heart"></div></div>
+
+  <div class="card">
+    <div class="kitty">
+      <img src="kitty-cutout.png" alt="Hello Kitty">
+    </div>
+
+    <span class="badge">LOGIN SUCCESS ♡</span>
+    <h1>Hello <span>Kitty</span></h1>
+    <p class="welcome-user" id="welcomeUser">欢迎回来～</p>
+    <p class="subtitle">你已成功登录啦！<br>今天也要像 Kitty 一样，元气满满、被好多朋友包围哦 ♡</p>
+
+    <button class="btn" onclick="goHome()">进 入 主 页</button>
+    <a class="back" href="hello-kitty-login.html">← 返回登录页</a>
+  </div>
+
+  <div class="bg-switch" id="bgSwitch" title="点击切换背景">
+    <span class="dot" id="bgDot"></span>
+    换背景 🎀
+  </div>
+
+<script>
+  // 显示登录用户名
+  const params = new URLSearchParams(location.search);
+  const user = params.get('user');
+  if (user) {
+    document.getElementById('welcomeUser').textContent = '欢迎回来，' + user + ' ♡';
+  }
+
+  function goHome() {
+    document.querySelector('.btn').textContent = '准 备 中…';
+    setTimeout(() => { alert('🎀 主页还在建设中，先和 Kitty 玩一会儿吧～'); }, 500);
+  }
+
+  // 右下角切换背景（与登录页一致）
+  const themes = [
+    { name: '草莓粉', bg: 'linear-gradient(135deg, #ffe9f2 0%, #ffd6e7 45%, #ffc4dd 100%)', heart: '#ffa8c9' },
+    { name: '天空蓝', bg: 'linear-gradient(135deg, #e3f2ff 0%, #cfe6ff 45%, #bcdcff 100%)', heart: '#9ec5ff' },
+    { name: '梦幻紫', bg: 'linear-gradient(135deg, #f3e6ff 0%, #e6d2ff 45%, #d9bdff 100%)', heart: '#c9a3ff' },
+    { name: '薄荷绿', bg: 'linear-gradient(135deg, #e6fff4 0%, #d2ffe9 45%, #bdf7da 100%)', heart: '#7fe3b8' },
+    { name: '蜜桃橙', bg: 'linear-gradient(135deg, #fff0e6 0%, #ffdcc7 45%, #ffc9b0 100%)', heart: '#ffb38f' },
+    { name: '晚霞紫粉', bg: 'linear-gradient(135deg, #ffe8e0 0%, #ffd1e8 50%, #e8d1ff 100%)', heart: '#f3a7d6' }
+  ];
+  let themeIdx = 0;
+  const bgSwitch = document.getElementById('bgSwitch');
+  const bgDot = document.getElementById('bgDot');
+  function applyTheme() {
+    const t = themes[themeIdx];
+    const root = document.documentElement;
+    root.style.setProperty('--bg', t.bg);
+    root.style.setProperty('--heart-color', t.heart);
+    bgDot.style.background = t.bg;
+    bgSwitch.lastChild.textContent = ' 换背景（' + t.name + '）';
+  }
+  bgSwitch.addEventListener('click', () => {
+    themeIdx = (themeIdx + 1) % themes.length;
+    applyTheme();
+  });
+</script>
+</body>
+</html>

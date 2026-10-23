@@ -1,0 +1,36 @@
+Hello Kitty 主题网页 使用说明
+==============================
+【方式一】后端托管（推荐，完整功能）
+1) 确保本地 MySQL 已启动（账号 APT / 密码 123456，库 kitty_db 已建好）
+2) 在 IDEA 中运行 D:\workSpace\springBootTest 的 SpringBootTestApplication
+3) 浏览器访问 http://localhost:8081/hello-kitty-login.html
+4) 注册新账号 -> 自动跳回登录 -> 登录 -> 穿越时空动画 -> 抵达 Hello Kitty 家族
+   （也可直接用测试账号 kitty / 123456 登录）
+5) 家族页右下角可切换 6 套背景色；点击成员可打招呼
+
+【方式二】仅前端（后端未启动时）
+- 直接双击 hello-kitty-login.html，页面会提示"连不上服务器"
+- 登录/注册需要后端在 http://localhost:8081 运行
+
+【后端接口】
+- GET  /api/auth/captcha   获取图形验证码（captchaId + base64 图片，5 分钟过期、一次性）
+- POST /api/auth/register  注册（用户名 3-12 位，密码至少 6 位 + 验证码，BCrypt 加密入库）
+- POST /api/auth/login     登录（返回 token，2 小时有效；旧明文密码账号首次登录自动升级密文）
+- GET  /api/auth/me        校验登录态
+- POST /api/auth/logout    退出登录
+- POST /api/greet          打招呼入库（需 token，返回累计次数）
+- GET  /api/greet/count    我的累计打招呼次数（需 token）
+- GET  /api/greet/leaderboard  成员人气榜（公开）
+
+【工程化】
+- 接口限流：登录/注册按 IP 每分钟最多 10 次，超限返回 429「操作太频繁啦」
+- 单元测试：14 个用例（mvn test），测试用 H2 内存库隔离，不碰真实 MySQL
+
+【页面】
+- hello-kitty-login.html  登录（记住我）
+- register.html           注册（带图形验证码，点击图片刷新）
+- family.html             家族页（登录态守卫、打招呼计数、退出登录）
+- rank.html               成员人气榜（家族页底部有入口）
+
+【SQL 文件】
+- D:\workSpace\springBootTest\sql\kitty_db.sql（建库 kitty_db + user 表 + 测试账号）

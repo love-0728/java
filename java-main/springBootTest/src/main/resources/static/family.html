@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Hello Kitty 家族 ♡</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  :root {
+    --pink-100: #ffe3ee;
+    --pink-200: #ffc9de;
+    --pink-300: #ffa8c9;
+    --pink-400: #ff8ab8;
+    --pink-500: #f76fa5;
+    --pink-600: #e75a92;
+    --red:      #e8404f;
+    --ink:      #5c4a52;
+    --ink-soft: #a08793;
+    --bg:       linear-gradient(135deg, #ffe9f2 0%, #ffd6e7 45%, #ffc4dd 100%);
+    --heart-color: var(--pink-300);
+  }
+
+  body {
+    min-height: 100vh;
+    font-family: "PingFang SC", "Microsoft YaHei", "Segoe UI", sans-serif;
+    background: var(--bg);
+    transition: background .6s ease;
+    padding: 30px 22px 60px;
+    overflow-x: hidden;
+    position: relative;
+  }
+
+  .deco { position: fixed; pointer-events: none; opacity: .5; animation: floaty 6s ease-in-out infinite; z-index: 0; }
+  .heart { width: 26px; height: 26px; background: var(--heart-color); transform: rotate(45deg); border-radius: 4px 4px 0 0; position: relative; transition: background .6s ease; }
+  .heart::before, .heart::after { content: ""; position: absolute; width: 26px; height: 26px; background: var(--heart-color); border-radius: 50%; }
+  .heart::before { left: -13px; } .heart::after { top: -13px; }
+  .d1 { top: 10%; left: 6%; } .d2 { top: 80%; left: 4%; animation-delay: 1.2s; }
+  .d3 { top: 14%; right: 7%; animation-delay: .6s; } .d4 { top: 82%; right: 9%; animation-delay: 1.8s; }
+  @keyframes floaty { 0%,100% { translate: 0 0; } 50% { translate: 0 -16px; } }
+
+  header { position: relative; z-index: 1; text-align: center; margin-bottom: 26px; }
+  h1 { font-size: 30px; color: var(--pink-600); letter-spacing: 2px; font-weight: 800; }
+  h1 span { color: var(--red); }
+  .subtitle { color: var(--ink-soft); font-size: 14px; margin-top: 8px; }
+  .subtitle b { color: var(--pink-600); }
+
+  /* ---------- 家族成员网格 ---------- */
+  .family {
+    position: relative; z-index: 1;
+    max-width: 1080px; margin: 0 auto;
+    display: flex; flex-wrap: wrap;
+    justify-content: center;
+    gap: 14px;
+  }
+  .member {
+    width: 108px;
+    background: rgba(255,255,255,.9);
+    border: 2px solid var(--pink-100);
+    border-radius: 18px;
+    padding: 10px 8px 8px;
+    text-align: center;
+    cursor: pointer;
+    box-shadow: 0 6px 16px rgba(231,90,146,.14);
+    transition: transform .2s, box-shadow .2s;
+    animation: pop .5s backwards;
+  }
+  .member:hover { transform: translateY(-6px) scale(1.05); box-shadow: 0 12px 26px rgba(231,90,146,.3); }
+  .member.jump { animation: jump .5s; }
+  @keyframes jump { 30% { transform: translateY(-14px) scale(1.08); } 60% { transform: translateY(0) scale(.96); } }
+  @keyframes pop { from { opacity: 0; transform: scale(.4); } to { opacity: 1; transform: scale(1); } }
+
+  .member .pic { height: 96px; display: flex; align-items: flex-end; justify-content: center; }
+  .member img { max-width: 92px; max-height: 94px; object-fit: contain; }
+  .member .tag {
+    margin-top: 7px; font-size: 11.5px; font-weight: 700;
+    color: var(--pink-600); background: var(--pink-50, #fff5f8);
+    border-radius: 999px; padding: 3px 0;
+  }
+
+  .footer { position: relative; z-index: 1; text-align: center; margin-top: 34px; font-size: 13px; color: var(--ink-soft); }
+  .footer a { color: var(--pink-500); font-weight: 600; text-decoration: none; }
+  .footer a:hover { text-decoration: underline; }
+
+  .toast {
+    position: fixed; left: 50%; bottom: 36px;
+    transform: translateX(-50%) translateY(20px);
+    background: #fff; color: var(--pink-600);
+    border: 2px solid var(--pink-200); border-radius: 999px;
+    padding: 10px 22px; font-size: 14px; font-weight: 600;
+    box-shadow: 0 10px 30px rgba(231,90,146,.25);
+    opacity: 0; pointer-events: none; transition: all .35s; z-index: 9;
+  }
+  .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+  .bg-switch {
+    position: fixed; right: 20px; bottom: 20px; z-index: 10;
+    display: flex; align-items: center; gap: 8px;
+    padding: 10px 16px; border: 2px solid rgba(255,255,255,.7); border-radius: 999px;
+    background: rgba(255,255,255,.6); backdrop-filter: blur(6px);
+    color: var(--pink-600); font-size: 13px; font-weight: 700; cursor: pointer;
+    box-shadow: 0 6px 18px rgba(231,90,146,.25); transition: transform .2s; user-select: none;
+  }
+  .bg-switch:hover { transform: translateY(-2px) scale(1.04); }
+  .bg-switch .dot { width: 16px; height: 16px; border-radius: 50%; border: 2px solid #fff; background: linear-gradient(135deg,#ff8ab8,#f76fa5); }
+</style>
+</head>
+<body>
+
+  <div class="deco d1"><div class="heart"></div></div>
+  <div class="deco d2"><div class="heart"></div></div>
+  <div class="deco d3"><div class="heart"></div></div>
+  <div class="deco d4"><div class="heart"></div></div>
+
+  <header>
+    <h1>Hello <span>Kitty</span> 的家族 ♡</h1>
+    <p class="subtitle">穿越时空成功！<b id="welcomeUser"></b>欢迎来到家族，这里有 <b id="count">…</b> 位成员哦～</p>
+  </header>
+
+  <div class="family" id="family"></div>
+
+  <p class="footer">点击任意成员打个招呼吧 · <a href="rank.html">🏆 人气榜</a> · <a href="#" id="logoutBtn">退出登录 →</a></p>
+
+  <div class="toast" id="toast"></div>
+  <div class="bg-switch" id="bgSwitch" title="点击切换背景">
+    <span class="dot" id="bgDot"></span>
+    换背景 🎀
+  </div>
+
+<script src="characters/manifest.js"></script>
+<script>
+  // ---------- 登录态守卫 ----------
+  const API_BASE = 'http://localhost:8081';
+  const params = new URLSearchParams(location.search);
+  const token = localStorage.getItem('kittyToken');
+  let user = params.get('user') || localStorage.getItem('kittyUser') || '';
+
+  if (!token) {
+    // 未登录直接访问 → 回登录页
+    location.href = 'hello-kitty-login.html';
+  } else {
+    // 校验 token 是否有效（过期或后端重启后自动回登录页）
+    fetch(API_BASE + '/api/auth/me?token=' + encodeURIComponent(token))
+      .then(res => res.json())
+      .then(data => {
+        if (data.code !== 200) {
+          localStorage.removeItem('kittyToken');
+          localStorage.removeItem('kittyUser');
+          location.href = 'hello-kitty-login.html';
+          return;
+        }
+        user = data.data.username;
+        document.getElementById('welcomeUser').textContent = user + '，';
+      })
+      .catch(() => showToast('😿 连不上服务器，打招呼将不会被记录'));
+  }
+
+  // 欢迎语（先用本地信息展示，me 接口返回后会校准）
+  document.getElementById('welcomeUser').textContent = user ? user + '，' : '';
+
+  // 生成家族成员
+  const list = window.CHARACTERS || [];
+  document.getElementById('count').textContent = list.length;
+  const family = document.getElementById('family');
+  const scales = [1.25, 0.8, 1.0, 0.62, 1.1, 0.9, 1.18, 0.72];  // 大的小的高的胖的～
+  const pastels = ['#fff5f8', '#fef6ff', '#f3fbff', '#f7fff3', '#fffaf0'];
+
+  list.forEach((m, i) => {
+    const src = typeof m === 'string' ? m : m.src;
+    const name = (typeof m === 'object' && m.name) ? m.name : ('成员 No.' + (i + 1));
+    const card = document.createElement('div');
+    card.className = 'member';
+    card.style.background = pastels[i % pastels.length];
+    card.style.animationDelay = (i * 0.04) + 's';
+
+    const pic = document.createElement('div');
+    pic.className = 'pic';
+    const img = document.createElement('img');
+    img.src = 'characters/' + src;
+    img.alt = '家族成员 ' + name;
+    img.style.transform = 'scale(' + scales[i % scales.length] + ')';
+    img.style.transformOrigin = 'bottom center';
+    pic.appendChild(img);
+
+    const tag = document.createElement('div');
+    tag.className = 'tag';
+    tag.textContent = name;
+
+    card.appendChild(pic);
+    card.appendChild(tag);
+    card.addEventListener('click', () => {
+      card.classList.remove('jump');
+      void card.offsetWidth;
+      card.classList.add('jump');
+      if (!token) { showToast('♡ ' + name + ' 向你打招呼啦～'); return; }
+      // 打招呼记录入库
+      fetch(API_BASE + '/api/greet', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ token: token, member: name })
+      })
+        .then(res => res.json())
+        .then(data => {
+          if (data.code === 200) {
+            showToast('♡ ' + name + ' 向你打招呼啦～（累计第 ' + data.data.total + ' 次）');
+          } else if (data.code === 401) {
+            localStorage.removeItem('kittyToken');
+            localStorage.removeItem('kittyUser');
+            location.href = 'hello-kitty-login.html';
+          } else {
+            showToast('♡ ' + name + ' 向你打招呼啦～');
+          }
+        })
+        .catch(() => showToast('♡ ' + name + ' 向你打招呼啦～'));
+    });
+    family.appendChild(card);
+  });
+
+  // toast
+  const toast = document.getElementById('toast');
+  let toastTimer;
+  function showToast(msg) {
+    toast.textContent = msg;
+    toast.classList.add('show');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => toast.classList.remove('show'), 1800);
+  }
+
+  // 退出登录
+  document.getElementById('logoutBtn').addEventListener('click', (e) => {
+    e.preventDefault();
+    const done = () => {
+      localStorage.removeItem('kittyToken');
+      localStorage.removeItem('kittyUser');
+      location.href = 'hello-kitty-login.html';
+    };
+    if (token) {
+      fetch(API_BASE + '/api/auth/logout', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ token: token })
+      }).finally(done);
+    } else {
+      done();
+    }
+  });
+
+  // 右下角换背景
+  const themes = [
+    { name: '草莓粉', bg: 'linear-gradient(135deg, #ffe9f2 0%, #ffd6e7 45%, #ffc4dd 100%)', heart: '#ffa8c9' },
+    { name: '天空蓝', bg: 'linear-gradient(135deg, #e3f2ff 0%, #cfe6ff 45%, #bcdcff 100%)', heart: '#9ec5ff' },
+    { name: '梦幻紫', bg: 'linear-gradient(135deg, #f3e6ff 0%, #e6d2ff 45%, #d9bdff 100%)', heart: '#c9a3ff' },
+    { name: '薄荷绿', bg: 'linear-gradient(135deg, #e6fff4 0%, #d2ffe9 45%, #bdf7da 100%)', heart: '#7fe3b8' },
+    { name: '蜜桃橙', bg: 'linear-gradient(135deg, #fff0e6 0%, #ffdcc7 45%, #ffc9b0 100%)', heart: '#ffb38f' },
+    { name: '晚霞紫粉', bg: 'linear-gradient(135deg, #ffe8e0 0%, #ffd1e8 50%, #e8d1ff 100%)', heart: '#f3a7d6' }
+  ];
+  let themeIdx = 0;
+  const bgSwitch = document.getElementById('bgSwitch');
+  const bgDot = document.getElementById('bgDot');
+  bgSwitch.addEventListener('click', () => {
+    themeIdx = (themeIdx + 1) % themes.length;
+    const t = themes[themeIdx];
+    document.documentElement.style.setProperty('--bg', t.bg);
+    document.documentElement.style.setProperty('--heart-color', t.heart);
+    bgDot.style.background = t.bg;
+    bgSwitch.lastChild.textContent = ' 换背景（' + t.name + '）';
+    showToast('🎨 已切换到「' + t.name + '」背景');
+  });
+</script>
+</body>
+</html>

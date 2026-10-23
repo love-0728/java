@@ -1,0 +1,13 @@
+{
+  "name": "hello-kitty-register-backend",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Hello Kitty 家族站后端（账号密码 + 图形验证码）",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "express": "^4.19.2"
+  }
+}

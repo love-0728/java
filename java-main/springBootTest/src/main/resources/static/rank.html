@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>成员人气榜 ♡</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  :root {
+    --pink-50:  #fff5f8;
+    --pink-100: #ffe3ee;
+    --pink-200: #ffc9de;
+    --pink-300: #ffa8c9;
+    --pink-400: #ff8ab8;
+    --pink-500: #f76fa5;
+    --pink-600: #e75a92;
+    --red:      #e8404f;
+    --ink:      #5c4a52;
+    --ink-soft: #a08793;
+    --bg:       linear-gradient(135deg, #ffe9f2 0%, #ffd6e7 45%, #ffc4dd 100%);
+    --heart-color: var(--pink-300);
+  }
+
+  body {
+    min-height: 100vh;
+    font-family: "PingFang SC", "Microsoft YaHei", "Segoe UI", sans-serif;
+    background: var(--bg);
+    transition: background .6s ease;
+    display: flex; align-items: center; justify-content: center;
+    padding: 24px;
+    overflow-x: hidden;
+    position: relative;
+  }
+
+  .deco { position: fixed; pointer-events: none; opacity: .55; animation: floaty 6s ease-in-out infinite; z-index: 0; }
+  .heart { width: 26px; height: 26px; background: var(--heart-color); transform: rotate(45deg); border-radius: 4px 4px 0 0; position: relative; transition: background .6s ease; }
+  .heart::before, .heart::after { content: ""; position: absolute; width: 26px; height: 26px; background: var(--heart-color); border-radius: 50%; }
+  .heart::before { left: -13px; } .heart::after { top: -13px; }
+  .d1 { top: 12%; left: 10%; } .d2 { top: 68%; left: 6%; animation-delay: 1.2s; }
+  .d3 { top: 18%; right: 9%; animation-delay: .6s; } .d4 { top: 74%; right: 12%; animation-delay: 1.8s; }
+  @keyframes floaty { 0%,100% { translate: 0 0; } 50% { translate: 0 -16px; } }
+
+  .card {
+    position: relative; z-index: 1;
+    width: 420px; max-width: 100%;
+    background: rgba(255,255,255,.92);
+    backdrop-filter: blur(8px);
+    border-radius: 28px;
+    padding: 36px 32px 26px;
+    box-shadow: 0 20px 60px rgba(231,90,146,.25), 0 4px 16px rgba(231,90,146,.12);
+  }
+
+  .ribbon {
+    position: absolute; top: 0; left: 50%; transform: translateX(-50%);
+    width: 120px; height: 26px;
+    background: linear-gradient(90deg, var(--red), #ff6b6b);
+    clip-path: polygon(0 0, 100% 0, 92% 100%, 8% 100%);
+    border-radius: 0 0 8px 8px;
+  }
+
+  h1 { text-align: center; font-size: 26px; color: var(--pink-600); letter-spacing: 1px; font-weight: 800; }
+  h1 span { color: var(--red); }
+  .subtitle { text-align: center; color: var(--ink-soft); font-size: 13px; margin: 8px 0 22px; }
+
+  .rank-list { display: flex; flex-direction: column; gap: 10px; }
+  .rank-item {
+    display: flex; align-items: center; gap: 12px;
+    background: var(--pink-50);
+    border: 2px solid var(--pink-100);
+    border-radius: 16px;
+    padding: 10px 14px;
+    animation: pop .4s backwards;
+  }
+  @keyframes pop { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
+
+  .medal {
+    width: 34px; height: 34px; flex-shrink: 0;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 15px; font-weight: 800; color: #fff;
+    background: linear-gradient(135deg, var(--pink-300), var(--pink-500));
+    box-shadow: 0 4px 10px rgba(231,90,146,.3);
+  }
+  .rank-item:nth-child(1) .medal { background: linear-gradient(135deg, #ffd24d, #f0a500); }
+  .rank-item:nth-child(2) .medal { background: linear-gradient(135deg, #cfd8e3, #9fb2c8); }
+  .rank-item:nth-child(3) .medal { background: linear-gradient(135deg, #f0b27a, #d08446); }
+
+  .rank-name { flex: 1; font-size: 15px; font-weight: 700; color: var(--ink); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .rank-bar-wrap { flex: 2; height: 8px; background: var(--pink-100); border-radius: 99px; overflow: hidden; }
+  .rank-bar { height: 100%; border-radius: 99px; background: linear-gradient(90deg, var(--pink-300), var(--pink-500)); transition: width .8s ease; }
+  .rank-cnt { width: 52px; text-align: right; font-size: 13px; font-weight: 700; color: var(--pink-600); }
+
+  .empty { text-align: center; color: var(--ink-soft); font-size: 13.5px; padding: 30px 0; }
+
+  .footer { text-align: center; margin-top: 20px; font-size: 13px; color: var(--ink-soft); }
+  .footer a { color: var(--pink-500); font-weight: 600; text-decoration: none; margin: 0 6px; }
+  .footer a:hover { text-decoration: underline; }
+
+  .toast {
+    position: fixed; left: 50%; bottom: 36px;
+    transform: translateX(-50%) translateY(20px);
+    background: #fff; color: var(--pink-600);
+    border: 2px solid var(--pink-200); border-radius: 999px;
+    padding: 10px 22px; font-size: 14px; font-weight: 600;
+    box-shadow: 0 10px 30px rgba(231,90,146,.25);
+    opacity: 0; pointer-events: none; transition: all .35s; z-index: 9;
+  }
+  .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+  .bg-switch {
+    position: fixed; right: 20px; bottom: 20px; z-index: 10;
+    display: flex; align-items: center; gap: 8px;
+    padding: 10px 16px; border: 2px solid rgba(255,255,255,.7); border-radius: 999px;
+    background: rgba(255,255,255,.6); backdrop-filter: blur(6px);
+    color: var(--pink-600); font-size: 13px; font-weight: 700; cursor: pointer;
+    box-shadow: 0 6px 18px rgba(231,90,146,.25); transition: transform .2s; user-select: none;
+  }
+  .bg-switch:hover { transform: translateY(-2px) scale(1.04); }
+  .bg-switch .dot { width: 16px; height: 16px; border-radius: 50%; border: 2px solid #fff; background: linear-gradient(135deg,#ff8ab8,#f76fa5); }
+</style>
+</head>
+<body>
+
+  <div class="deco d1"><div class="heart"></div></div>
+  <div class="deco d2"><div class="heart"></div></div>
+  <div class="deco d3"><div class="heart"></div></div>
+  <div class="deco d4"><div class="heart"></div></div>
+
+  <div class="card">
+    <div class="ribbon"></div>
+    <h1>成员<span>人气榜</span> ♡</h1>
+    <p class="subtitle">谁收到的招呼最多呢？快去家族页为喜欢的成员打 call 吧～</p>
+
+    <div class="rank-list" id="rankList">
+      <p class="empty">加载中…</p>
+    </div>
+
+    <p class="footer">
+      <a href="family.html">← 去打招呼</a> ·
+      <a href="#" id="refreshBtn">刷新榜单</a>
+    </p>
+  </div>
+
+  <div class="toast" id="toast"></div>
+  <div class="bg-switch" id="bgSwitch" title="点击切换背景">
+    <span class="dot" id="bgDot"></span>
+    换背景 🎀
+  </div>
+
+<script>
+  const API_BASE = 'http://localhost:8081';
+  const rankList = document.getElementById('rankList');
+  const toast = document.getElementById('toast');
+
+  function showToast(msg) {
+    toast.textContent = msg;
+    toast.classList.add('show');
+    clearTimeout(showToast._t);
+    showToast._t = setTimeout(() => toast.classList.remove('show'), 2000);
+  }
+
+  const MEDALS = ['🥇', '🥈', '🥉'];
+  function render(list) {
+    if (!list.length) {
+      rankList.innerHTML = '<p class="empty">还没有人打招呼哦，快去家族页抢个头彩吧 ♡</p>';
+      return;
+    }
+    const max = Number(list[0].cnt) || 1;
+    rankList.innerHTML = '';
+    list.forEach((item, i) => {
+      const div = document.createElement('div');
+      div.className = 'rank-item';
+      div.style.animationDelay = (i * 0.06) + 's';
+      const pct = Math.max(6, Math.round(Number(item.cnt) / max * 100));
+      div.innerHTML =
+        '<div class="medal">' + (MEDALS[i] || (i + 1)) + '</div>' +
+        '<div class="rank-name" title="' + item.member + '">' + item.member + '</div>' +
+        '<div class="rank-bar-wrap"><div class="rank-bar" style="width:0%"></div></div>' +
+        '<div class="rank-cnt">' + item.cnt + ' 次</div>';
+      rankList.appendChild(div);
+      setTimeout(() => { div.querySelector('.rank-bar').style.width = pct + '%'; }, 60);
+    });
+  }
+
+  function loadRank() {
+    fetch(API_BASE + '/api/greet/leaderboard?limit=10')
+      .then(res => res.json())
+      .then(data => {
+        if (data.code === 200) {
+          render(data.data || []);
+        } else {
+          rankList.innerHTML = '<p class="empty">榜单加载失败，请稍后再试</p>';
+        }
+      })
+      .catch(() => {
+        rankList.innerHTML = '<p class="empty">😿 连不上服务器，请确认后端已启动</p>';
+      });
+  }
+
+  document.getElementById('refreshBtn').addEventListener('click', (e) => {
+    e.preventDefault();
+    loadRank();
+    showToast('🎀 榜单已刷新');
+  });
+
+  loadRank();
+
+  // 右下角换背景
+  const themes = [
+    { name: '草莓粉', bg: 'linear-gradient(135deg, #ffe9f2 0%, #ffd6e7 45%, #ffc4dd 100%)', heart: '#ffa8c9' },
+    { name: '天空蓝', bg: 'linear-gradient(135deg, #e3f2ff 0%, #cfe6ff 45%, #bcdcff 100%)', heart: '#9ec5ff' },
+    { name: '梦幻紫', bg: 'linear-gradient(135deg, #f3e6ff 0%, #e6d2ff 45%, #d9bdff 100%)', heart: '#c9a3ff' },
+    { name: '薄荷绿', bg: 'linear-gradient(135deg, #e6fff4 0%, #d2ffe9 45%, #bdf7da 100%)', heart: '#7fe3b8' },
+    { name: '蜜桃橙', bg: 'linear-gradient(135deg, #fff0e6 0%, #ffdcc7 45%, #ffc9b0 100%)', heart: '#ffb38f' },
+    { name: '晚霞紫粉', bg: 'linear-gradient(135deg, #ffe8e0 0%, #ffd1e8 50%, #e8d1ff 100%)', heart: '#f3a7d6' }
+  ];
+  let themeIdx = 0;
+  const bgSwitch = document.getElementById('bgSwitch');
+  const bgDot = document.getElementById('bgDot');
+  bgSwitch.addEventListener('click', () => {
+    themeIdx = (themeIdx + 1) % themes.length;
+    const t = themes[themeIdx];
+    document.documentElement.style.setProperty('--bg', t.bg);
+    document.documentElement.style.setProperty('--heart-color', t.heart);
+    bgDot.style.background = t.bg;
+    bgSwitch.lastChild.textContent = ' 换背景（' + t.name + '）';
+    showToast('🎨 已切换到「' + t.name + '」背景');
+  });
+</script>
+</body>
+</html>

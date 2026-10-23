@@ -1,0 +1,86 @@
+============================================================
+AI 项目自述备忘（java-main）
+本文件供 AI 助手快速理解项目，避免电脑重置后重复探索。
+编码：GBK | 最后更新：2026-10-16
+============================================================
+
+【项目根目录】
+C:\Users\Administrator\Desktop\java-main\java-main\java-main\
+
+注意：桌面 "java-main" 文件夹内还有两层同名 "java-main"，
+项目实际代码在第三层（即本备忘所在目录）。
+
+【整体构成：两个互相独立的服务】
+1) springBootTest  —— Spring Boot 3.4.5 后端，端口 8081
+   - 技术栈：Spring Boot + MyBatis-Plus 3.5.7 + Thymeleaf + MySQL
+   - 包名：com.fenglin.springboottest
+   - 默认激活 dev 环境（application.properties 里 spring.profiles.active=dev）
+   - 数据库：MySQL 库 kitty_db，用户 APT/123456，驱动 mysql-connector-j
+   - 接口示例：/api/auth/*（注册/登录/图形验证码/token）、greet、user
+   - 静态页面：src/main/resources/static/*.html（login/register/family/rank/welcome 等）
+   - Maven Wrapper 存在（mvnw / mvnw.cmd），可用 ./mvnw 构建
+
+2) hello-kitty-family-site —— Node + Express 后端，端口 3000
+   - package.json：name=hello-kitty-register-backend，start=node server.js，依赖仅 express
+   - server.js：自带账号密码注册/登录 + 图形验证码（零依赖，用 crypto 生成 SVG 验证码）
+   - 数据存在本地 users.json 文件，【不连 MySQL】
+   - 托管自身静态页（hello-kitty-register.html / hello-kitty-login.html 等）
+   - 与 springBootTest 是两套独立账号体系，端口不同，当前无互相调用
+
+【数据库（关键，每次重置必做）】
+- 本机已装 MySQL Server 8.0，默认端口 3306
+- 可连账号：root / 123456（项目配置写的是 APT/123456，但本机真实存在的是 root）
+- 重要：项目要连的 kitty_db 库在电脑重置后会消失，必须重新初始化
+- mysql 客户端路径：C:\Program Files\MySQL\MySQL Server 8.0\bin\mysql.exe
+- 初始化步骤（幂等，可重复执行）：
+    a) 执行建库脚本：mysql -u root -p123456 < springBootTest/sql/kitty_db.sql
+       （脚本内含 CREATE DATABASE IF NOT EXISTS kitty_db、建 user/greet_log 表、
+        插入测试账号 kitty/123456，全部 IF NOT EXISTS 可重跑）
+    b) 创建项目用户并授权：
+       CREATE USER IF NOT EXISTS 'APT'@'localhost' IDENTIFIED BY '123456';
+       GRANT ALL PRIVILEGES ON kitty_db.* TO 'APT'@'localhost';
+       FLUSH PRIVILEGES;
+- 本机另有 ruoyi 库（若依系统，31 张表），与本项目无关，不要动
+- Docker 未安装，docker-compose.yml 无法使用，只能依赖本机 MySQL
+
+【启动步骤（每次重置后）】
+前置：确认 MySQL 服务在跑（端口 3306 监听）。若没跑，管理员运行
+      net start MySQL80（或 net start MySQL）启动服务。
+1) 初始化数据库（见上“数据库”一节）
+2) 启动 springBootTest：
+   cd springBootTest && mvnw spring-boot:run   （端口 8081）
+   注意：target/ 每次重置被删，mvn 会重新编译生成；首次依赖下载较慢
+3) 启动 hello-kitty-family-site：
+   cd hello-kitty-family-site && npm install && npm start
+   （端口 3000，npm install 因 node_modules 被删必须重装，仅 express 很快）
+4) 浏览器访问：
+   Spring Boot: http://localhost:8081
+   Node 站点:   http://localhost:3000
+
+【环境约束（重要）】
+- node_modules/ 和 target/ 在每次开机/重置前都会被删除
+- 因此启动脚本运行前不能使用这两个文件夹的内容
+- 必须在脚本里：先 npm install（Node）再启动；用 mvn/mvnw 重新构建（Java）再启动
+- 不要依赖 node_modules 里的可执行文件，也不要用上次构建的 target/*.jar
+
+【已生成的辅助脚本（本目录）】
+- AI_PROJECT_NOTES.txt：本文件（AI 自述备忘）
+- start-all.bat：一键初始化数据库并启动两个服务（相对路径，GBK）
+- open-kitty-db.bat：双击连入 kitty_db 交互式命令行（查看数据用）
+
+【项目缺失 / 待办】
+1. 缺少启动说明文档：顶层 README.md 只有一行“记录学习过程”，
+   应补充端口、依赖、数据库初始化、启动命令
+2. 两个服务账号体系重复且互不关联（springBootTest 用 MySQL，family-site 用 users.json），
+   需确认是否有意分开，还是应整合
+3. 未安装数据库 GUI 工具（DBeaver / Workbench / Navicat），建议装一个方便查看
+4. 无自动化测试 / CI；docker-compose 因无 Docker 暂不可用
+5. family-site 仅依赖 express，功能简单，可作为独立注册演示
+
+【常见坑】
+- 直接用 APT 账号连本机 MySQL 会 Access denied：因为本机 MySQL 里 APT 用户可能未建，
+  需先用 root 建并授权（见“数据库”初始化步骤）
+- 端口冲突：8081 / 3000 若被占用，改 application-dev.properties 的 server.port
+  或 server.js 里的 PORT 环境变量
+- 中文乱码：mysql 连接加 --default-character-set=utf8mb4
+============================================================

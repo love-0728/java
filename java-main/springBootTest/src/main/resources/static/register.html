@@ -1,0 +1,609 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Hello Kitty · 注册</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  :root {
+    --pink-50:  #fff5f8;
+    --pink-100: #ffe3ee;
+    --pink-200: #ffc9de;
+    --pink-300: #ffa8c9;
+    --pink-400: #ff8ab8;
+    --pink-500: #f76fa5;
+    --pink-600: #e75a92;
+    --red:      #e8404f;
+    --ink:      #5c4a52;
+    --ink-soft: #a08793;
+    --bg:       linear-gradient(135deg, #ffe9f2 0%, #ffd6e7 45%, #ffc4dd 100%);
+    --heart-color: var(--pink-300);
+  }
+
+  body {
+    min-height: 100vh;
+    font-family: "PingFang SC", "Microsoft YaHei", "Segoe UI", sans-serif;
+    background: var(--bg);
+    transition: background .6s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+    overflow-x: hidden;
+    position: relative;
+  }
+
+  /* ---------- 背景漂浮装饰 ---------- */
+  .deco {
+    position: fixed;
+    pointer-events: none;
+    opacity: .55;
+    animation: floaty 6s ease-in-out infinite;
+    z-index: 0;
+  }
+  .heart {
+    width: 26px; height: 26px;
+    background: var(--heart-color);
+    transform: rotate(45deg);
+    border-radius: 4px 4px 0 0;
+    position: relative;
+    transition: background .6s ease;
+  }
+  .heart::before, .heart::after {
+    content: ""; position: absolute; width: 26px; height: 26px;
+    background: var(--heart-color); border-radius: 50%;
+  }
+  .heart::before { left: -13px; }
+  .heart::after  { top: -13px; }
+
+  .d1 { top: 12%; left: 10%; animation-delay: 0s; }
+  .d2 { top: 68%; left: 6%;  animation-delay: 1.2s; transform: rotate(45deg) scale(.7); }
+  .d3 { top: 18%; right: 9%; animation-delay: .6s; }
+  .d4 { top: 74%; right: 12%; animation-delay: 1.8s; transform: rotate(45deg) scale(.85); }
+  .d5 { top: 44%; left: 18%; animation-delay: 2.4s; transform: rotate(45deg) scale(.55); }
+  .d6 { top: 40%; right: 20%; animation-delay: 3s; transform: rotate(45deg) scale(.6); }
+
+  @keyframes floaty {
+    0%, 100% { translate: 0 0; }
+    50% { translate: 0 -16px; }
+  }
+
+  /* ---------- 卡片 ---------- */
+  .card {
+    position: relative;
+    z-index: 1;
+    width: 400px;
+    max-width: 100%;
+    background: rgba(255, 255, 255, .92);
+    backdrop-filter: blur(8px);
+    border-radius: 28px;
+    padding: 40px 36px 30px;
+    box-shadow:
+      0 20px 60px rgba(231, 90, 146, .25),
+      0 4px 16px rgba(231, 90, 146, .12);
+    text-align: center;
+  }
+
+  /* 顶部蝴蝶结丝带 */
+  .ribbon {
+    position: absolute;
+    top: 0; left: 50%;
+    transform: translateX(-50%);
+    width: 120px; height: 26px;
+    background: linear-gradient(90deg, var(--red), #ff6b6b);
+    clip-path: polygon(0 0, 100% 0, 92% 100%, 8% 100%);
+    border-radius: 0 0 8px 8px;
+  }
+
+  /* ---------- Kitty 展示 ---------- */
+  .avatar-wrap {
+    width: 100%;
+    height: 220px;
+    margin: 8px 0 14px;
+    border-radius: 22px;
+    background: linear-gradient(135deg, #fff3f8, #ffe6f0);
+    overflow: hidden;
+    animation: bounce 3.2s ease-in-out infinite;
+  }
+  .avatar-wrap img {
+    width: 100%; height: 100%;
+    object-fit: contain;
+  }
+  @keyframes bounce {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-8px); }
+  }
+
+  h1 {
+    font-size: 28px;
+    color: var(--pink-600);
+    letter-spacing: 1px;
+    font-weight: 800;
+  }
+  h1 span { color: var(--red); }
+  .subtitle {
+    color: var(--ink-soft);
+    font-size: 13.5px;
+    margin: 8px 0 24px;
+  }
+
+  /* ---------- 表单 ---------- */
+  .field {
+    position: relative;
+    margin-bottom: 14px;
+  }
+  .field .icon {
+    position: absolute;
+    left: 14px; top: 50%;
+    transform: translateY(-50%);
+    font-size: 16px;
+    opacity: .75;
+  }
+  .field input {
+    width: 100%;
+    padding: 13px 44px 13px 42px;
+    border: 2px solid var(--pink-100);
+    border-radius: 999px;
+    background: var(--pink-50);
+    font-size: 14px;
+    color: var(--ink);
+    outline: none;
+    transition: all .25s;
+  }
+  .field input::placeholder { color: #c9a9b6; }
+  .field input:focus {
+    border-color: var(--pink-400);
+    background: #fff;
+    box-shadow: 0 0 0 4px rgba(255, 138, 184, .18);
+  }
+  .field input.ok    { border-color: #7fd6a8; }
+  .field input.error { border-color: #ff8a8a; }
+
+  .toggle-eye {
+    position: absolute;
+    right: 14px; top: 50%;
+    transform: translateY(-50%);
+    border: none; background: none;
+    cursor: pointer; font-size: 15px;
+    opacity: .6;
+  }
+  .toggle-eye:hover { opacity: 1; }
+
+  /* 输入提示 */
+  .hint {
+    display: none;
+    text-align: left;
+    font-size: 11.5px;
+    margin: -6px 16px 10px;
+  }
+  .hint.show { display: block; }
+  .hint.err  { color: #e8404f; }
+  .hint.good { color: #4caf7d; }
+
+  /* 密码强度条 */
+  .strength {
+    display: none;
+    margin: -6px 16px 12px;
+    align-items: center;
+    gap: 8px;
+  }
+  .strength.show { display: flex; }
+  .strength .bars {
+    flex: 1;
+    display: flex;
+    gap: 5px;
+  }
+  .strength .bar {
+    flex: 1; height: 5px;
+    border-radius: 99px;
+    background: var(--pink-100);
+    transition: background .3s;
+  }
+  .strength .label {
+    font-size: 11.5px;
+    color: var(--ink-soft);
+    min-width: 28px;
+    text-align: right;
+  }
+  .strength.lv1 .bar:nth-child(1) { background: #ff8a8a; }
+  .strength.lv2 .bar:nth-child(-n+2) { background: #ffb066; }
+  .strength.lv3 .bar:nth-child(-n+3) { background: #ffd24d; }
+  .strength.lv4 .bar { background: #7fd6a8; }
+
+  /* 验证码行 */
+  .captcha-field {
+    display: flex;
+    gap: 10px;
+    align-items: stretch;
+  }
+  .captcha-field .captcha-input {
+    position: relative;
+    flex: 1;
+  }
+  .captcha-field .captcha-input input {
+    width: 100%;
+    height: 100%;
+    padding: 13px 14px 13px 42px;
+    border: 2px solid var(--pink-100);
+    border-radius: 999px;
+    background: var(--pink-50);
+    font-size: 14px;
+    color: var(--ink);
+    outline: none;
+    transition: all .25s;
+  }
+  .captcha-field .captcha-input input::placeholder { color: #c9a9b6; }
+  .captcha-field .captcha-input input:focus {
+    border-color: var(--pink-400);
+    background: #fff;
+    box-shadow: 0 0 0 4px rgba(255, 138, 184, .18);
+  }
+  .captcha-field .captcha-input .icon {
+    position: absolute;
+    left: 14px; top: 50%;
+    transform: translateY(-50%);
+    font-size: 16px;
+    opacity: .75;
+  }
+  .captcha-img {
+    width: 120px;
+    border-radius: 14px;
+    border: 2px solid var(--pink-100);
+    cursor: pointer;
+    transition: transform .15s, box-shadow .15s;
+    background: var(--pink-50);
+  }
+  .captcha-img:hover { transform: scale(1.04); box-shadow: 0 4px 12px rgba(231,90,146,.25); }
+
+  .agree {
+    display: flex;
+    align-items: flex-start;
+    gap: 7px;
+    font-size: 12.5px;
+    color: var(--ink-soft);
+    text-align: left;
+    margin: 6px 4px 18px;
+    line-height: 1.6;
+  }
+  .agree input[type="checkbox"] {
+    accent-color: var(--pink-500);
+    width: 15px; height: 15px;
+    margin-top: 2px;
+    flex-shrink: 0;
+    cursor: pointer;
+  }
+  .agree a { color: var(--pink-500); text-decoration: none; }
+  .agree a:hover { text-decoration: underline; }
+
+  .btn {
+    width: 100%;
+    padding: 14px;
+    border: none;
+    border-radius: 999px;
+    background: linear-gradient(135deg, var(--pink-400), var(--pink-600));
+    color: #fff;
+    font-size: 16px;
+    font-weight: 700;
+    letter-spacing: 6px;
+    cursor: pointer;
+    box-shadow: 0 8px 20px rgba(231, 90, 146, .35);
+    transition: transform .2s, box-shadow .2s;
+  }
+  .btn:hover { transform: translateY(-2px); box-shadow: 0 12px 26px rgba(231, 90, 146, .45); }
+  .btn:active { transform: translateY(0); }
+
+  .footer {
+    font-size: 13px;
+    color: var(--ink-soft);
+    margin-top: 20px;
+  }
+  .footer a { color: var(--pink-500); font-weight: 600; text-decoration: none; }
+  .footer a:hover { text-decoration: underline; }
+
+  /* ---------- 右下角背景切换 ---------- */
+  .bg-switch {
+    position: fixed;
+    right: 20px; bottom: 20px;
+    z-index: 10;
+    display: flex; align-items: center; gap: 8px;
+    padding: 10px 16px;
+    border: 2px solid rgba(255,255,255,.7);
+    border-radius: 999px;
+    background: rgba(255,255,255,.6);
+    backdrop-filter: blur(6px);
+    color: var(--pink-600);
+    font-size: 13px; font-weight: 700;
+    cursor: pointer;
+    box-shadow: 0 6px 18px rgba(231, 90, 146, .25);
+    transition: transform .2s, box-shadow .2s;
+    user-select: none;
+  }
+  .bg-switch:hover { transform: translateY(-2px) scale(1.04); box-shadow: 0 10px 24px rgba(231, 90, 146, .35); }
+  .bg-switch:active { transform: scale(.96); }
+  .bg-switch .dot {
+    width: 16px; height: 16px; border-radius: 50%;
+    border: 2px solid #fff;
+    background: linear-gradient(135deg, #ff8ab8, #f76fa5);
+    box-shadow: 0 0 0 1px rgba(231,90,146,.3);
+  }
+
+  /* ---------- 提示气泡 ---------- */
+  .toast {
+    position: fixed;
+    left: 50%; bottom: 36px;
+    transform: translateX(-50%) translateY(20px);
+    background: #fff;
+    color: var(--pink-600);
+    border: 2px solid var(--pink-200);
+    border-radius: 999px;
+    padding: 10px 22px;
+    font-size: 14px;
+    font-weight: 600;
+    box-shadow: 0 10px 30px rgba(231, 90, 146, .25);
+    opacity: 0;
+    pointer-events: none;
+    transition: all .35s;
+    z-index: 9;
+  }
+  .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+  @media (max-width: 440px) {
+    .card { padding: 34px 24px 26px; }
+  }
+</style>
+</head>
+<body>
+
+  <div class="deco d1"><div class="heart"></div></div>
+  <div class="deco d2"><div class="heart"></div></div>
+  <div class="deco d3"><div class="heart"></div></div>
+  <div class="deco d4"><div class="heart"></div></div>
+  <div class="deco d5"><div class="heart"></div></div>
+  <div class="deco d6"><div class="heart"></div></div>
+
+  <div class="card">
+    <div class="ribbon"></div>
+
+    <div class="avatar-wrap">
+      <img src="kitty-cutout.png" alt="Hello Kitty（已抠图）">
+    </div>
+
+    <h1>加入 <span>Kitty</span> 家族 ♡</h1>
+    <p class="subtitle">创建一个属于你的账号，和 Kitty 一起玩吧～</p>
+
+    <form id="registerForm" novalidate>
+      <div class="field">
+        <span class="icon">🎀</span>
+        <input type="text" id="username" placeholder="用户名（3-12 个字符）" autocomplete="username">
+      </div>
+      <p class="hint" id="userHint"></p>
+
+      <div class="field">
+        <span class="icon">🔒</span>
+        <input type="password" id="password" placeholder="设置密码（至少 6 位）" autocomplete="new-password">
+        <button type="button" class="toggle-eye" id="toggleEye1" aria-label="显示密码">👁️</button>
+      </div>
+      <div class="strength" id="strength">
+        <div class="bars">
+          <div class="bar"></div>
+          <div class="bar"></div>
+          <div class="bar"></div>
+          <div class="bar"></div>
+        </div>
+        <span class="label" id="strengthLabel"></span>
+      </div>
+
+      <div class="field">
+        <span class="icon">💖</span>
+        <input type="password" id="password2" placeholder="再输入一次密码" autocomplete="new-password">
+        <button type="button" class="toggle-eye" id="toggleEye2" aria-label="显示密码">👁️</button>
+      </div>
+      <p class="hint" id="pwd2Hint"></p>
+
+      <div class="field captcha-field">
+        <div class="captcha-input">
+          <span class="icon">🧩</span>
+          <input type="text" id="captchaCode" placeholder="验证码" maxlength="4" autocomplete="off">
+        </div>
+        <img id="captchaImg" class="captcha-img" title="看不清？点击刷新" alt="验证码">
+      </div>
+      <p class="hint" id="captchaHint"></p>
+
+      <label class="agree">
+        <input type="checkbox" id="agree">
+        <span>我已阅读并同意 <a href="#" onclick="return false;">《Kitty 家族用户协议》</a> 和 <a href="#" onclick="return false;">《隐私政策》</a>，愿意每天保持可爱 ♡</span>
+      </label>
+
+      <button type="submit" class="btn">注 册</button>
+    </form>
+
+    <p class="footer">已经有账号啦？<a href="hello-kitty-login.html">返回登录</a></p>
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+  <div class="bg-switch" id="bgSwitch" title="点击切换背景">
+    <span class="dot" id="bgDot"></span>
+    换背景 🎀
+  </div>
+
+<script>
+  // 后端接口地址（Spring Boot，端口见 application-dev.properties）
+  const API_BASE = 'http://localhost:8081';
+
+  // ---------- 密码显示/隐藏 ----------
+  function bindEye(inputId, eyeId) {
+    const input = document.getElementById(inputId);
+    const eye = document.getElementById(eyeId);
+    eye.addEventListener('click', () => {
+      const show = input.type === 'password';
+      input.type = show ? 'text' : 'password';
+      eye.textContent = show ? '🙈' : '👁️';
+    });
+  }
+  bindEye('password', 'toggleEye1');
+  bindEye('password2', 'toggleEye2');
+
+  // ---------- 提示气泡 ----------
+  const toast = document.getElementById('toast');
+  function showToast(msg) {
+    toast.textContent = msg;
+    toast.classList.add('show');
+    clearTimeout(showToast._t);
+    showToast._t = setTimeout(() => toast.classList.remove('show'), 2200);
+  }
+
+  // ---------- 字段提示 ----------
+  function setHint(el, msg, ok) {
+    el.textContent = msg;
+    el.className = 'hint show ' + (ok ? 'good' : 'err');
+  }
+  function clearHint(el) { el.className = 'hint'; el.textContent = ''; }
+
+  const username = document.getElementById('username');
+  const pwd      = document.getElementById('password');
+  const pwd2     = document.getElementById('password2');
+  const userHint  = document.getElementById('userHint');
+  const pwd2Hint  = document.getElementById('pwd2Hint');
+  const strength  = document.getElementById('strength');
+  const strengthLabel = document.getElementById('strengthLabel');
+
+  function validUsername(v) { return /^[\w一-龥]{3,12}$/.test(v); }
+
+  username.addEventListener('input', () => {
+    const v = username.value.trim();
+    if (!v) { username.className = ''; clearHint(userHint); return; }
+    if (validUsername(v)) {
+      username.className = 'ok';
+      setHint(userHint, '♡ 这个名字很可爱，可以使用！', true);
+    } else {
+      username.className = 'error';
+      setHint(userHint, '用户名需要 3-12 个字符（中文 / 字母 / 数字 / 下划线）', false);
+    }
+  });
+
+  // ---------- 密码强度 ----------
+  function passwordLevel(v) {
+    let lv = 0;
+    if (v.length >= 6)  lv++;
+    if (v.length >= 10) lv++;
+    if (/[0-9]/.test(v) && /[a-zA-Z]/.test(v)) lv++;
+    if (/[^a-zA-Z0-9]/.test(v)) lv++;
+    return lv;
+  }
+  const levelText = ['', '较弱', '一般', '不错', '超强'];
+  pwd.addEventListener('input', () => {
+    const v = pwd.value;
+    if (!v) { strength.className = 'strength'; strengthLabel.textContent = ''; return; }
+    const lv = Math.max(1, passwordLevel(v));
+    strength.className = 'strength show lv' + lv;
+    strengthLabel.textContent = levelText[lv];
+  });
+
+  pwd2.addEventListener('input', () => {
+    const v = pwd2.value;
+    if (!v) { pwd2.className = ''; clearHint(pwd2Hint); return; }
+    if (v === pwd.value) {
+      pwd2.className = 'ok';
+      setHint(pwd2Hint, '♡ 两次密码一致！', true);
+    } else {
+      pwd2.className = 'error';
+      setHint(pwd2Hint, '两次输入的密码不一致哦', false);
+    }
+  });
+
+  // ---------- 图形验证码 ----------
+  const captchaImg = document.getElementById('captchaImg');
+  const captchaCode = document.getElementById('captchaCode');
+  let captchaId = '';
+
+  function refreshCaptcha() {
+    captchaCode.value = '';
+    fetch(API_BASE + '/api/auth/captcha')
+      .then(res => res.json())
+      .then(data => {
+        if (data.code === 200) {
+          captchaId = data.data.captchaId;
+          captchaImg.src = data.data.image;
+        } else {
+          showToast('😿 验证码加载失败，点图片重试');
+        }
+      })
+      .catch(() => showToast('😿 连不上服务器，请确认后端已启动（localhost:8081）'));
+  }
+  captchaImg.addEventListener('click', refreshCaptcha);
+  refreshCaptcha();
+
+  // ---------- 提交注册 ----------
+  document.getElementById('registerForm').addEventListener('submit', (e) => {
+    e.preventDefault();
+    const user  = username.value.trim();
+
+    if (!user)  { showToast('🎀 先给自己起个名字吧～'); username.focus(); return; }
+    if (!validUsername(user)) { showToast('🎀 用户名需要 3-12 个字符哦～'); username.focus(); return; }
+    if (!pwd.value)           { showToast('🔒 记得设置一个密码呀～'); pwd.focus(); return; }
+    if (pwd.value.length < 6) { showToast('🔒 密码至少要 6 位哦～'); pwd.focus(); return; }
+    if (pwd2.value !== pwd.value) { showToast('💖 两次密码不一致呢～'); pwd2.focus(); return; }
+    if (!captchaCode.value.trim()) { showToast('🧩 验证码还没有填哦～'); captchaCode.focus(); return; }
+    if (!document.getElementById('agree').checked) {
+      showToast('📜 要先勾选同意用户协议哦～'); return;
+    }
+
+    // ---------- 调用后端注册接口 ----------
+    fetch(API_BASE + '/api/auth/register', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        username: user,
+        password: pwd.value,
+        captchaId: captchaId,
+        captchaCode: captchaCode.value.trim()
+      })
+    })
+      .then(res => res.json())
+      .then(data => {
+        if (data.code === 200) {
+          showToast('♡ 注册成功！欢迎加入 Kitty 家族～');
+          setTimeout(() => {
+            window.location.href = 'hello-kitty-login.html?from=register&user=' + encodeURIComponent(user);
+          }, 1300);
+        } else {
+          showToast('🎀 ' + (data.msg || '注册失败，请稍后再试'));
+          refreshCaptcha(); // 验证码是一次性的，失败后换新的
+        }
+      })
+      .catch(() => {
+        showToast('😿 连不上服务器，请确认后端已启动（localhost:8081）');
+      });
+  });
+
+  // ---------- 右下角切换背景 ----------
+  const themes = [
+    { name: '草莓粉', bg: 'linear-gradient(135deg, #ffe9f2 0%, #ffd6e7 45%, #ffc4dd 100%)', heart: '#ffa8c9' },
+    { name: '天空蓝', bg: 'linear-gradient(135deg, #e3f2ff 0%, #cfe6ff 45%, #bcdcff 100%)', heart: '#9ec5ff' },
+    { name: '梦幻紫', bg: 'linear-gradient(135deg, #f3e6ff 0%, #e6d2ff 45%, #d9bdff 100%)', heart: '#c9a3ff' },
+    { name: '薄荷绿', bg: 'linear-gradient(135deg, #e6fff4 0%, #d2ffe9 45%, #bdf7da 100%)', heart: '#7fe3b8' },
+    { name: '蜜桃橙', bg: 'linear-gradient(135deg, #fff0e6 0%, #ffdcc7 45%, #ffc9b0 100%)', heart: '#ffb38f' },
+    { name: '晚霞紫粉', bg: 'linear-gradient(135deg, #ffe8e0 0%, #ffd1e8 50%, #e8d1ff 100%)', heart: '#f3a7d6' }
+  ];
+  let themeIdx = 0;
+  const bgSwitch = document.getElementById('bgSwitch');
+  const bgDot = document.getElementById('bgDot');
+  function applyTheme() {
+    const t = themes[themeIdx];
+    const root = document.documentElement;
+    root.style.setProperty('--bg', t.bg);
+    root.style.setProperty('--heart-color', t.heart);
+    bgDot.style.background = t.bg;
+    bgSwitch.lastChild.textContent = ' 换背景（' + t.name + '）';
+  }
+  bgSwitch.addEventListener('click', () => {
+    themeIdx = (themeIdx + 1) % themes.length;
+    applyTheme();
+    showToast('🎨 已切换到「' + themes[themeIdx].name + '」背景');
+  });
+</script>
+</body>
+</html>
